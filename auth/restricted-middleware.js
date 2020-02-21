@@ -7,14 +7,22 @@ module.exports = (req, res, next) => {
   if(token) {
   jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
     if (err) {
-      console.log('failed verify', err);
-      res.status(401).json ({message: 'not verified'});
+      console.log('failed to verify', err);
+      res.status(401).json 
+      ({
+        success:false,
+        errorMessage: 'You do not belong here'
+      });
       } else {
-        req.decodedToken = decodedToken;
+        req.user = {department: decodedToken.department};
         next();
       }
     });
       } else {
-       res.status(400).json({Message: 'no token'})
+       res.status(401).json
+       ({
+         success:false,
+         errorMessage: 'this is not your lucky day!'
+        })
       };
     };
